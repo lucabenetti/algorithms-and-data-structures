@@ -34,4 +34,8 @@ int main () {
 	for(i = 0; i < n; i++) {
 		printf("%d ", vetor[i]);
 	} printf("\n");
+	
+	free(vetor);
+	
+	return 0;
 }
