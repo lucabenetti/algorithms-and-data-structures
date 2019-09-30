@@ -7,27 +7,28 @@ void troca (int *vetor, int i, int j) {
 	vetor[j] = aux;
 }
 
-int partition(int *vetor, int p, int r) {
-	int j;	
-	int pivo = vetor[r], i = p-1;
-	
-	for(j = p; j <= r - 1; j++) {
-		if(vetor[j] <= pivo) {
+int partition (int *vetor, int inicio, int fim) {
+	int j;
+	int pivot = vetor[fim];
+	int i = inicio - 1;
+
+	for(j = inicio; j <= fim - 1; j++) {
+		if(vetor[j] < pivot) {
 			i = i + 1;
 			troca(vetor, i, j);
 		}
 	}
-	troca(vetor, i+1, r);
+	troca(vetor, i+1, fim);
 	return (i+1);
 }
 
-void quickSort (int *vetor, int p, int r) {
-	int q;
+void quickSort(int *vetor, int inicio, int fim) {
+	int meio;
 
-	if(p < r) {
-		q = partition(vetor, p, r);
-		quickSort(vetor,p,q-1);
-		quickSort(vetor,q+1,r);
+	if (inicio < fim) {
+		meio = partition (vetor, inicio, fim);
+		quickSort(vetor,inicio, meio - 1);
+		quickSort(vetor,meio+1,fim);
 	}
 }
 
