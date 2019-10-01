@@ -6,14 +6,16 @@ void selectionSort(int *vetor, int i, int n) {
 	int aux;
 	int min = i;
 
-	for (j = i + 1; j < n; j++) {
+	for (j = i + 1; j < n-1; j++) {
 		if (vetor[j] < vetor[min])	min = j;
 	}
 
-	aux = vetor[min];
-	vetor[min] = vetor[i];
-	vetor[i] = aux;
-
+	if(vetor[min] != vetor[i]) {
+		aux = vetor[min];
+		vetor[min] = vetor[i];
+		vetor[i] = aux;
+	}
+	
 	if (i + 1 < n) {
 		selectionSort(vetor, i + 1, n);
 	}
