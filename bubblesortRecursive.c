@@ -4,7 +4,7 @@
 void bubbleSort(int *vetor, int n) {
 	int i, aux;
 
-	if(n == 1) return;
+	if(n == 0) return;
 
 		for(i = 0; i < n; i++) {
 			if(vetor[i] > vetor[i+1]) {
