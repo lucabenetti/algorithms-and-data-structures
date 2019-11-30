@@ -72,6 +72,8 @@ int pilha_insere (Pilha * p, char * elemento) {
  
 char * pilha_remove (Pilha * p) {
     char *aux = malloc (strlen(p->elementos[p->tamanho-1])+1);
+	
+    strcpy(aux, p->elementos[p->tamanho-1]);
    
     p->elementos[p->tamanho-1] = NULL;
    
