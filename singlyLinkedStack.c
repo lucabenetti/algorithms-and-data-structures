@@ -3,6 +3,7 @@
 #include <string.h>
  
 typedef struct pilha Pilha;
+typedef struct no No;
  
 Pilha * pilha_cria (int maxTamanho);
 Pilha * pilha_copia (Pilha * p);
@@ -18,109 +19,135 @@ char * pilha_imprime  (Pilha * p);
 struct pilha {
     int tamanho;
     int maxTamanho;
-    char **elementos;
+    No *topo;
 };
  
-Pilha *pilha_cria(int maxTamanho) {
-    Pilha *q = malloc (sizeof(Pilha));
+struct no {
+    char *elemento;
+    struct no *proximo;
+};
+ 
+Pilha * pilha_cria (int maxTamanho) {
+    Pilha *q = (Pilha *) malloc (sizeof(Pilha));
+    
    
     if(q != NULL) {
-        q->elementos = malloc (sizeof(char *) * maxTamanho);
         q->tamanho = 0;
         q->maxTamanho = maxTamanho;
+        q->topo = NULL;
     }
- 
+   
     return q;
 }
  
-Pilha * pilha_copia (Pilha * p) {
-    Pilha *q = pilha_cria(p->maxTamanho);
+Pilha * pilha_copia (Pilha * p){
+
+   Pilha *q = pilha_cria(p->maxTamanho);
+
+   Pilha *aux1 = pilha_cria(p->maxTamanho);
+   Pilha *aux2 = pilha_cria(p->maxTamanho);
    
-    int i;
+   No *aux = p->topo;
    
-    for(i = 0; i < p->tamanho; i++) {
-        q->elementos[i] = malloc (strlen(p->elementos[i])+1);
-        strcpy(q->elementos[i], p->elementos[i]);
-    }
+   int i;
+  
    
-    q->tamanho = p->tamanho;
+   while(p->tamanho > 0) {
+   		char *str = pilha_remove(p);
+   		pilha_insere(aux1, str);
+   }
    
-    return q;
+   while(aux1->tamanho >0) {
+  		char *str = pilha_remove(aux1);
+  		pilha_insere(q, str);
+  		pilha_insere(p, str);
+   }
+   
+   return q;
+ 
 }
  
 void pilha_libera (Pilha * p) {
-    int i;
+    No *aux = p->topo;
    
-    for(i = 0; i < p->tamanho; i++) {
-        free(p->elementos[i]);
-    }
-   
-    free(p);
+    while (aux->proximo != NULL) {
+        No *q = aux;
+        aux = aux->proximo;
+        free(q);
+    } free(p);
 }
  
 int pilha_insere (Pilha * p, char * elemento) {
-    if(pilha_se_cheia(p) || p == NULL) return 0;
-       
-    p->elementos[p->tamanho] = malloc (strlen(elemento)+1);
+    if(p == NULL || p->tamanho == p->maxTamanho) return -1;
  
-    strcpy(p->elementos[p->tamanho], elemento);
+    No *novo = malloc (sizeof(No));
+   
+    novo->elemento = malloc (strlen(elemento)+1);
+    strcpy(novo->elemento, elemento);
  
-    p->tamanho++;  
+    if(p->tamanho == 0) {  
+        p->topo = novo;
+        novo->proximo = NULL;
+    }
+   
+    else {
+        novo->proximo = p->topo;
+        p->topo = novo;
+    }
+   
+    p->tamanho++;
    
     return 1;
 }
  
 char * pilha_remove (Pilha * p) {
-    char *aux = malloc (strlen(p->elementos[p->tamanho-1])+1);
+ 
+    No *aux = p->topo;
    
-    p->elementos[p->tamanho-1] = NULL;
+    p->topo = aux->proximo;
    
+ 
+    char *str = malloc (strlen(aux->elemento)+1);
+    strcpy(str, aux->elemento);
+       
+    free(aux);
+    
     p->tamanho--;
    
-    return aux;
+    return str;
 }
  
 char * pilha_obtem_topo  (Pilha * p) {
-    if(p == NULL || p->tamanho == 0) return '\0';
-    return p->elementos[p->tamanho-1];
+    return p->topo->elemento;
 }
 int pilha_obtem_tamanho  (Pilha * p) {
-    if (p == NULL) return -1;
-   
     return p->tamanho;
 }
 int pilha_se_vazia (Pilha * p) {
-    if(p == NULL) return -1;
-   
     if(p->tamanho == 0) return 1;
+    else return 0;
 }
 int pilha_se_cheia (Pilha * p) {
-    if(p == NULL) return -1;
-   
-    else if(p->tamanho == p->maxTamanho) return 1;
- 
+    if(p->tamanho == p->maxTamanho) return 1;
     else return 0;
 }
 char * pilha_imprime  (Pilha * p) {
-    char *aux = malloc (10000);
-    aux[0] = '\0';
- 
-    if(p->tamanho == 0 || p == NULL) return aux;
- 
-    int i;
- 
-    for(i = 0; i < p->tamanho; i++) {
-        if(i == 0) sprintf(aux, "%s ", p->elementos[i]);
-        else sprintf(aux, "%s%s ", aux, p->elementos[i]);
-    }              
-                   
-                   
-    return aux;
+    char *str = malloc (10000);
+   
+    No *aux = p->topo;
+   
+    int i = 0;
+   
+    while (aux != NULL) {
+        if(i == 0) sprintf(str, "%s ", aux->elemento);
+        else sprintf(str, "%s%s ", str, aux->elemento);
+        aux = aux->proximo;
+        i++;
+    }
+           
+    return str;
 }
- 
- 
+
 int main () {
-	return 0;
+
 }
-
-
